@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KomiwojazerGA</name>
+    </assembly>
+    <members>
+        <member name="T:KomiwojazerGA.CityModel">
+            <summary>
+            Klasa ukazująca miasto
+            </summary>
+        </member>
+        <member name="M:KomiwojazerGA.CityModel.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Tworzy obiekt klasy CityModel na podstawie podanych parametrów 
+            </summary>
+            <param name="newID">ID miasta</param>
+            <param name="newX">Położenie geograficzne 'X' miasta</param>
+            <param name="newY">Położenie geograficzne 'Y' miasta</param>
+        </member>
+        <member name="M:KomiwojazerGA.FileManager.GetAllFilesPaths">
+            <summary>
+            Pobiera ścieżki do plików w obecnym folderze
+            </summary>
+            <returns>
+            Listę ścieżek do plików
+            </returns>
+        </member>
+        <member name="M:KomiwojazerGA.FileManager.ReadCitiesFromPath(System.String,System.Int32@)">
+            <summary>
+            Czyta plik tekstowy.
+            Poszukuje odpowiedniego formatu pliku dla stworzenia obiektów typu 'CityModel'  
+            </summary>
+            <param name="path">Ścieżka do pliku tekstowego</param>
+            <param name="numberOfCities">Ilość miast odczytywana z pliku</param>
+            <returns>
+            Listę obiektów typu 'CityModel' o rozmiarze <paramref name="numberOfCities"/>  
+            </returns>
+        </member>
+        <member name="M:KomiwojazerGA.Program.Selection(KomiwojazerGA.RouteModel[]@)">
+            <summary>
+            Selekcja do nowej populacji metodą rankingową z elitaryzmem
+            </summary>
+            <param name="routes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KomiwojazerGA.Program.Mutation(KomiwojazerGA.RouteModel[]@)">
+            <summary>
+            Mutuje osobniki z tablicy <paramref name="routes"/> tworząc nowych osobników do następnej populacji (Operator Scramble Mutation)
+            </summary>
+            <param name="routes">Tablica obiektów typu 'RouteModel' zawierająca trasy po krzyżowaniu, przed mutacją</param>
+        </member>
+        <member name="M:KomiwojazerGA.Program.CrossingPickRouteIDRandom(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Losuje ID (rodzica) trasy do krzyżowania i sprawdza czy dane ID (rodzic) już się nie krzyżował, jeśli krzyżował to próba wylosowania innego ID 
+            </summary>
+            <param name="IDOcurrencesList">Lista do sprawdzania i przechowywania ID (rodziców), które brały już udział w krzyżowaniu</param>
+            <returns>Wylosowane ID trasy</returns>
+        </member>
+        <member name="M:KomiwojazerGA.Program.Crossing(KomiwojazerGA.RouteModel[])">
+            <summary>
+            Krzyżuje osobniki z tablicy <paramref name="routes"/> tworząc nowych osobników do następnej populacji (Order Crossover OX, Davis, 1985)
+            </summary>
+            <param name="routes">Tablica obiektów typu 'RouteModel' zawierająca trasy poprzedniej populacji</param>
+            <returns>Nowa tablicę obiektów typu 'RouteModel' zawierającą Elitę z poprzedniej populacji oraz potomków</returns>
+        </member>
+        <member name="M:KomiwojazerGA.Program.CrossTwoParentsIntoOneChild(System.Int32,System.Int32,System.Int32,System.Int32,KomiwojazerGA.RouteModel[])">
+            <summary>
+            Krzyżuje ze sobą dwóch rodziców w celu wytworzenia jednego potomka klasy 'RouteModel'
+            </summary>
+            <param name="leftPoint">Lewy punkt przedziału przecięcia</param>
+            <param name="rightPoint">Prawy punkt przedziału przecięcia</param>
+            <param name="firstID">ID pierwszego rodzica</param>
+            <param name="secondID">ID drugiego rodzica</param>
+            <param name="routes">Tablica obiektów typu 'RouteModel' zawierająca trasy poprzedniej populacji</param>
+            <returns>Potomka powstałego z krzyżowania klasy 'RouteModel'</returns>
+        </member>
+        <member name="M:KomiwojazerGA.Program.CreateMenuAndGetPathID(System.Collections.Generic.List{System.String})">
+            <summary>
+            Tworzy menu w konsoli i oczekuje wybrania od użytkownika numeru pliku do odczytania
+            </summary>
+            <param name="paths">Lista ścieżek do plików w obecnym folderze</param>
+            <returns>
+            Wybrany numer pliku
+            </returns>
+        </member>
+        <member name="M:KomiwojazerGA.Program.CalculateCitiesDistances(System.Int32[0:,0:]@,System.Collections.Generic.List{KomiwojazerGA.CityModel})">
+            <summary>
+            Tworzy macierz dla odległości pomiędzy miastami
+            </summary>
+            <param name="citiesDistanceArray">Macierz z odległościami pomiędzy poszczególnymi miastami</param>
+            <param name="cities">Lista obiektów typu 'CityModel'</param>
+        </member>
+        <member name="M:KomiwojazerGA.Program.CreateRandomRoutes(System.Int32[0:,0:],System.Collections.Generic.List{KomiwojazerGA.CityModel})">
+            <summary>
+            Tworzy początkową 'populację' tras
+            </summary>
+            <param name="citiesDistanceArray">Macierz z odległościami pomiędzy poszczególnymi miastami</param>
+            <param name="cities">Lista obiektów typu 'CityModel'</param>
+            <returns>
+            Tablicę obiektów typu 'RouteModel'
+            </returns>
+        </member>
+        <member name="T:KomiwojazerGA.RouteModel">
+            <summary>
+            Klasa ukazująca trasę
+            </summary>
+        </member>
+        <member name="M:KomiwojazerGA.RouteModel.#ctor(System.Int32[0:,0:],System.Collections.Generic.List{KomiwojazerGA.CityModel})">
+            <summary>
+            Tworzy obiekt klasy RouteModel
+            Tworzy tablice miast w kolejności od 1 do MAX ASC, a następnie ją miesza za pomocą algorytmu Fisher-Yates
+            Dystans jest obliczany na podstawie macierzy <paramref name="distanceArray"/>, gdzie dodaje się odległości sąsiadujących ze sobą ID
+            </summary>
+            <param name="distanceArray">Macierz odległości pomiędzy miastami</param>
+            <param name="cities">Lista obiektów typu "CityModel'</param>
+        </member>
+    </members>
+</doc>
